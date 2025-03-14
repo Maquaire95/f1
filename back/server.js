@@ -45,3 +45,22 @@ app.get('/news', (req, res) => {
         res.json(results);
     });
 });
+
+
+// Ajouter une actualité
+app.post('/news', (req, res) => {
+    const { titre, contenu, iduser } = req.body;
+
+    if (!titre || !contenu || !iduser) {
+        return res.status(400).json({ message: 'Tous les champs sont requis' });
+    }
+
+    const sql = 'INSERT INTO News (Titre, Contenu, DateTime, iduser) VALUES (?, ?, NOW(), ?)';
+    db.query(sql, [titre, contenu, iduser], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'ajout de l\'actualité :', err);
+            return res.status(500).json({ message: 'Erreur serveur' });
+        }
+        res.status(201).json({ message: 'Actualité ajoutée avec succès', newsId: result.insertId });
+    });
+});
