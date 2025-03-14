@@ -33,3 +33,15 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
 });
+
+
+app.get('/news', (req, res) => {
+    const sql = "SELECT id, Titre, Contenu, DateTime FROM News ORDER BY DateTime DESC";
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Erreur lors de la récupération des news :", err);
+            return res.status(500).json({ error: "Erreur serveur" });
+        }
+        res.json(results);
+    });
+});
